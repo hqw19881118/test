@@ -1,0 +1,20 @@
+
+mvn clean install -Dmaven.test.skip=true
+
+play打war包：在项目上级目录执行play war projectName --%prod --zip -o projectName.war
+解压：jar -xvf projectName.war
+
+
+官网布署命令
+git fetch origin --tags
+git checkout tag号
+python manage.py collectstatic
+bash -x stop.sh
+bash -x start.sh sandbox 
+
+删除远程tag号： git push origin :refs/tags/[name]
+拉取远程tag: git pull origin --tags
+
+查询电话号码运营商及归属地
+curl -i "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=15910683156"
+curl -i "http://event.map.baidu.com/service/phoneinfo?phone=15910683156"

@@ -1,0 +1,1 @@
+urlת�룺perl -p -e 's/%(..)/pack("c", hex($1))/eg'
