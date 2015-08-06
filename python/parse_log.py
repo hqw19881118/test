@@ -51,7 +51,7 @@ def parse_access_log(ins, split_char='\t'):
 
             stat_key = "%s\t%s" % (pkg, vn)
             summary.setdefault(stat_key, 0)
-            summary[key] += 1
+            summary[stat_key] += 1
             line_cnt += 1
             if line_cnt % 100000 == 0:
                 logger.debug("parse count: %d" % line_cnt)
