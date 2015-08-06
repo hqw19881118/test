@@ -3,6 +3,7 @@ import redis
 
 
 hasher = pyhash.murmur2_x64_64a()
+redis_pool = {}
 
 '''''
     this is a shard redis which transplant from jedis(redis java client)
@@ -58,9 +59,12 @@ class ShardJedis():
     '''
     def getRedis(self,key):
         redisInfo = self.getShardInfo(key)
-        redisInfos = redisInfo.split(":")
-        #print redisInfo
-        return redis.StrictRedis(host = redisInfos[0], port = int(redisInfos[1]))
+        if redisInfo in redis_pool:
+            return redis_pool.get(redisInfo)
+        else:
+            splits = redisInfo.split(":")
+            redis_pool[redisInfo] = redis.StrictRedis(host=splits[0], port=int(splits[1]))
+            return redis_pool[redisInfo]
 
     def delete(self, key):
         redis_client = self.getRedis(key)
