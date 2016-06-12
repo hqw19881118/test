@@ -9,3 +9,6 @@ lftp ftp://username:password@host:port
 cat ~/datas | awk '{cmd="./redis-cli -h 127.0.0.1 -p 6379 -n 1 setex "$0" 60 4"; system(cmd);}'
 # urldecode
 perl -p -e 's/%(..)/pack("c", hex($1))/eg'
+
+# maven
+创建空的基于mavenr的项目：mvn archetype:generate
