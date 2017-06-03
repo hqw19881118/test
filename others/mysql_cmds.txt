@@ -15,6 +15,22 @@ SELECT TABLE_NAME,TABLE_ROWS,DATA_LENGTH/1024/1024 "DATA_LENGTH",CREATE_TIME,TAB
 service mysqld stop、start、restart
 
 Mysql备份：
-mysqldump –hhost –uusername –ppassword database --ignore-table=database.table1 --ignore-table=database.table2 | gzip > database.gz
+mysqldump –hhost –uusername –ppassword database --skip-lock-table --ignore-table=database.table1 --ignore-table=database.table2 | gzip > database.gz
 #只备份表结构
-mysqldump --opt -h 127.0.0.1 -uusername -ppasswd -d dbName –table tableName
+mysqldump --no-data -h 127.0.0.1 -uusername -ppasswd -d dbName –table tableName
+
+Mybatis 优化：
+1、引入第三方的DataSource；在Mybatis-config.xml中的DataSource标签的属性注入的是DataSourceFactory对象，我们需要建一个自己的DataSourceFactory类用来封装第三方的DataSource，它必须要实现接口org.apache.ibatis.datasource.DataSourceFactory
+
+<typeAliases><typeAlias type="com.mybatis3.datasource.DruidDataSourceFactory" alias="DRUID"/> </typeAliases>
+2、Mybatis与传统的插入操作性能比较：http://13638363871-163-com.iteye.com/blog/1549465
+
+EXPLAIN 关键字可以让你知道MySQL是如何处理你的SQL语句的。这可以帮你分析你的查询语句或是表结构的性能瓶颈
+
+避免使用select *
+
+当需要进行存在判断或仅需要一条数据时，最好用limit 1;
+
+sqlSeccsionFactory对象应该设为静态的，全局维护一个就OK。
+
+mybatis会用log4j记录日志，但是开启debug模式貌似对性能影响非常厉害。
