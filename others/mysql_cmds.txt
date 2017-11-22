@@ -34,3 +34,46 @@ EXPLAIN 关键字可以让你知道MySQL是如何处理你的SQL语句的。这可以帮你分析你的查询语
 sqlSeccsionFactory对象应该设为静态的，全局维护一个就OK。
 
 mybatis会用log4j记录日志，但是开启debug模式貌似对性能影响非常厉害。
+
+
+MySQL创建数据库与创建用户以及授权
+
+1、create schema [数据库名称] default character set utf8 collate utf8_general_ci;--创建数据库
+
+　　采用create schema和create database创建数据库的效果一样。
+
+2、create user '[用户名称]'@'%' identified by '[用户密码]';--创建用户
+
+　　密码8位以上，包括：大写字母、小写字母、数字、特殊字符
+
+　　%：匹配所有主机，该地方还可以设置成‘localhost’，代表只能本地访问，例如root账户默认为‘localhost‘
+
+3、grant select,insert,update,delete,create,drop,alter,index on [数据库名称].* to [用户名称];--用户授权数据库
+   grant all on [数据库名称].* to [用户名称];;
+　　*代表整个数据库
+
+4、flush privileges ;--立即启用修改
+
+5、revoke all on *.* from tester;--取消用户所有数据库（表）的所有权限
+
+6、delete from mysql.user where user='tester';--删除用户
+
+7、drop database [schema名称|数据库名称];--删除数据库
+
+8、IP访问授权(%表示放开所有IP限制)：
+GRANT ALL PRIVILEGES ON *.* TO username@'%' IDENTIFIED BY 'aicp_prod@2017' WITH GRANT OPTION;
+flush privileges;
+
+mysql 特性：
+1. char, varchar在比较操作时，不区分大小写；char在存储时会去掉首尾的空格，varchar不会。
+2. char, varchar，当长度小于255时，在内存中会多占用1个字节；长度在256~65535时，在内存中多占用2个字符
+3. utf-8字符集下可以创建的最大的varchar(x)是floor((65535 - 2)/3) = 21844个中文或英文
+
+mysql索引案例1（匹配规则：第一个字段一定要在条件里）：
+复合索引包含(A, B, C)三个字段，可以用到索引的条件有哪些？A, AB, ABC, AC(效果不好)
+案例2：在索引中完成排序，即尽量让排序的字段在索引中，如where A and B order by C，则应创建 A B C的一个复合索引。explian，尽量避免filesort
+更新非常频繁的字段不适合建立索引
+like子句中，以通配符开头的字符串不会使用索引
+
+
+
